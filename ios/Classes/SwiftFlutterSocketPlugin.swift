@@ -155,9 +155,9 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
             
             var byteData:[UInt8] = []
             let byte_0:UInt8 = UInt8((value & 0xFF000000) >> 24)
-            let byte_1:UInt8 = UInt8((value & 0xFF000000) >> 16)
-            let byte_2:UInt8 = UInt8((value & 0xFF000000) >> 8)
-            let byte_3:UInt8 = UInt8((value & 0xFF000000))
+            let byte_1:UInt8 = UInt8((value & 0xFF0000) >> 16)
+            let byte_2:UInt8 = UInt8((value & 0xFF00) >> 8)
+            let byte_3:UInt8 = UInt8((value & 0xFF))
             byteData.append(byte_0)
             byteData.append(byte_1)
             byteData.append(byte_2)
@@ -216,10 +216,19 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
     ///   - data: data
     ///   - tag: tag
     func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
-        let message = String(data: data, encoding: String.Encoding.utf8)
-        if message != nil {
-            methodChannel.invokeMethod("receive_message", arguments: message)
+        let dataCount = data.count
+        if(dataCount > 4 ){
+            let msgLengthStr = String(data:data.prefix(4),encoding: String.Encoding.utf8)
+            let msgLength = Int.init(msgLengthStr ?? "")
+            if(msgLength == dataCount - 4) {
+                let message = String(data: data.suffix(from: 4), encoding: String.Encoding.utf8)
+                if message != nil {
+                    methodChannel.invokeMethod("receive_message", arguments: message)
+                }
+            }
         }
+        
+
         socket.readData(withTimeout: -1, tag: 0)
     }
 
