@@ -1,4 +1,4 @@
-name: flutter_socket_plugin_fix
+name: flutter_socket_plugin
 description: FlutterSocket is a practical cross-platform socket plugin,supports both iOS and Android.
 version: 1.0.2
 homepage: https://github.com/Asutos/flutter_socket_plugin
