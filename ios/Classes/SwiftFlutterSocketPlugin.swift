@@ -218,13 +218,9 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
     func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
         let dataCount = data.count
         if(dataCount > 4 ){
-            let msgLengthStr = String(data:data.prefix(4),encoding: String.Encoding.utf8)
-            let msgLength = Int.init(msgLengthStr ?? "")
-            if(msgLength == dataCount - 4) {
-                let message = String(data: data.suffix(from: 4), encoding: String.Encoding.utf8)
-                if message != nil {
-                    methodChannel.invokeMethod("receive_message", arguments: message)
-                }
+            let message = String(data: data.suffix(from: 4), encoding: String.Encoding.utf8)
+            if message != nil {
+                methodChannel.invokeMethod("receive_message", arguments: message)
             }
         }
         
