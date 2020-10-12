@@ -183,14 +183,14 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
     
     /// add heart
     private func addHeartTimer() -> Void {
-        heartTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(heartAction), userInfo: nil, repeats: true)
-        RunLoop.current.add(heartTimer, forMode: RunLoop.Mode.common)
+//         heartTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(heartAction), userInfo: nil, repeats: true)
+//         RunLoop.current.add(heartTimer, forMode: RunLoop.Mode.common)
     }
 
     @objc func heartAction() -> Void {
-        let heartString = "heart"
-        let data:Data = heartString.data(using: String.Encoding.utf8)!
-        socket.write(data, withTimeout: -1, tag: 0)
+//         let heartString = "heart"
+//         let data:Data = heartString.data(using: String.Encoding.utf8)!
+//         socket.write(data, withTimeout: -1, tag: 0)
     }
     
     
@@ -203,7 +203,7 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
     ///   - host: host
     ///   - port: port
     func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-        addHeartTimer()
+//         addHeartTimer()
         connected = true
         socket.readData(withTimeout: -1, tag: 0)
         methodChannel.invokeMethod("connected", arguments: "connected")
