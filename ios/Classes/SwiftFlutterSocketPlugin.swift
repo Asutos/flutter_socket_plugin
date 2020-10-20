@@ -210,7 +210,7 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
         let dataCount = data.count
         let originMsg = String(data:data,encoding: String.Encoding.utf8)
         if(dataCount>0) {
-            print("read messageLength :\(dataCount),message is : \(originMsg!)")
+            print("read messageLength :\(dataCount),message is : \(originMsg)")
 
             resolve(data: data)
         }
