@@ -223,37 +223,32 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
 //         print("read messageLength :\(dataCount),message is : \(originMsg!)")
         receiveBuf.append(data)
 
-        while(true) {
-            let count = receiveBuf.count
-//            let bufferMsg = String(data:receiveBuf,encoding: String.Encoding.utf8)
-//            print("buffer length:  \(count) ,buffer msg:\(bufferMsg!)")
-            if(count > 4) {
-                let bodyLen = UInt32(receiveBuf[0]) << 24 + UInt32(receiveBuf[1]) << 16 + UInt32(receiveBuf[2]) << 8 + UInt32(receiveBuf[3])
+        let count = receiveBuf.count
+//      let bufferMsg = String(data:receiveBuf,encoding: String.Encoding.utf8)
+//      print("buffer length:  \(count) ,buffer msg:\(bufferMsg!)")
+        if(count > 4) {
+            let bodyLen = UInt32(receiveBuf[0]) << 24 + UInt32(receiveBuf[1]) << 16 + UInt32(receiveBuf[2]) << 8 + UInt32(receiveBuf[3])
 
-                let msgLength = Int(bodyLen)+4
-//                 print("bufferLenth : \(count), bodyLength : \(bodyLen), msgLength : \(msgLength)")
-                if( count >= msgLength ){
-                    let message = String(data: receiveBuf.subdata(in: 4..<msgLength),encoding: String.Encoding.utf8)
-//                    print("send message to flutter : \(message!)")
-                    methodChannel.invokeMethod("receive_message", arguments: message)
+            let msgLength = Int(bodyLen)+4
+//          print("bufferLenth : \(count), bodyLength : \(bodyLen), msgLength : \(msgLength)")
+            if( count >= msgLength ){
+                let message = String(data: receiveBuf.subdata(in: 4..<msgLength),encoding: String.Encoding.utf8)
+//              print("send message to flutter : \(message!)")
+                methodChannel.invokeMethod("receive_message", arguments: message)
 
-                    if(count > msgLength) {
-//                        let resetData = receiveBuf.subdata(in: msgLength ..< count)
-//                        receiveBuf.replaceSubrange(0 ..< resetData.count, with: resetData)
-                        receiveBuf.removeSubrange(0 ..< msgLength)
-                    }else if (count == msgLength) {
-                        receiveBuf.removeAll(keepingCapacity: false)
-                    } else {
-                        print("some else ")
-                    }
-//                    receiveBuf.removeSubrange(0 ..< msgLength)
-
+                if(count > msgLength) {
+//                  let resetData = receiveBuf.subdata(in: msgLength ..< count)
+//                  receiveBuf.replaceSubrange(0 ..< resetData.count, with: resetData)
+                    receiveBuf.removeSubrange(0 ..< msgLength)
+                }else if (count == msgLength) {
+                    receiveBuf.removeAll(keepingCapacity: false)
                 } else {
-                    break
+                    print("some else ")
                 }
-            }else {
-                break
+//              receiveBuf.removeSubrange(0 ..< msgLength)
+
             }
+
         }
     }
 
