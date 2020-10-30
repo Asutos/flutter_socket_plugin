@@ -71,7 +71,7 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
     /// 单例
     static let sharedInstance = FlutterSocket()
 
-    fileprivate var receiveBuf = Data(capacity: 1024*1024)
+    fileprivate var receiveBuf:Data!
 
     /// 是否连接
     var connected:Bool = false
@@ -196,6 +196,7 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
     ///   - port: port
     func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         connected = true
+        receiveBuf = Data(capacity: 1024*1024)
         socket.readData(withTimeout: -1, tag: 0)
         methodChannel.invokeMethod("connected", arguments: "connected")
     }
@@ -265,7 +266,10 @@ class FlutterSocket:NSObject, GCDAsyncSocketDelegate {
         socket.delegate = nil
         socket = nil
         connected = false
-        receiveBuf.removeAll()
+        if(receiveBuf != nil){
+            receiveBuf.removeAll()
+            receiveBuf = nil
+        }
 
         methodChannel.invokeMethod("disconnect", arguments: "disconnected")
     }
